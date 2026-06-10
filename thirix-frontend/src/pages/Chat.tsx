@@ -322,7 +322,7 @@ export default function Chat() {
         {typing && <div className="flex justify-start"><div className="bg-white rounded-2xl px-4 py-3 border border-gray-200 rounded-bl-md"><div className="flex gap-1"><span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay:'0ms'}} /><span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay:'150ms'}} /><span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay:'300ms'}} /></div></div></div>}
         <div ref={endRef} />
       </div>
-      <form onSubmit={handleSend} className="relative flex flex-wrap items-center gap-2 px-3 py-3 sm:px-4 border-t border-gray-200 bg-white">
+      <form onSubmit={handleSend} className="relative flex items-center gap-2 px-3 py-3 sm:px-4 border-t border-gray-200 bg-white">
         <div className="flex items-center gap-1 shrink-0">
           <label className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors cursor-pointer"><Paperclip size={20} /><input type="file" accept="image/*,video/*,.pdf,.doc,.docx" onChange={handleAttach} className="hidden" /></label>
           <button
@@ -351,8 +351,8 @@ export default function Chat() {
           </button>
         </div>
 
-        <input value={text} onChange={e => handleType(e.target.value)} placeholder="Escribe un mensaje..." className="flex-1 min-w-[140px] basis-full sm:basis-auto bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-300 transition-all" />
-        <button type="submit" disabled={!text.trim()} className="p-2.5 bg-primary-600 hover:bg-primary-500 text-white rounded-full transition-colors disabled:opacity-40"><Send size={18} /></button>
+        <input value={text} onChange={e => handleType(e.target.value)} placeholder="Escribe un mensaje..." className="flex-1 min-w-0 max-w-[calc(100%-170px)] sm:max-w-none bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-300 transition-all" />
+        <button type="submit" disabled={!text.trim()} className="shrink-0 p-2.5 bg-primary-600 hover:bg-primary-500 text-white rounded-full transition-colors disabled:opacity-40"><Send size={18} /></button>
 
         {emojiOpen && (
           <div className="absolute bottom-16 left-2 right-2 z-20 rounded-2xl border border-gray-200 bg-white p-3 shadow-xl">
