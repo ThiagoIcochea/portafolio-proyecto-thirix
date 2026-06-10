@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+const getCurrentRoute = () => {
+  if (typeof window === 'undefined') return '';
+  return window.location.hash.replace(/^#/, '');
+};
+
 const redirectToLogin = () => {
-  if (typeof window !== 'undefined' && window.location.hash !== '#/login') {
+  const currentRoute = getCurrentRoute();
+  if (typeof window !== 'undefined' && currentRoute !== '/login' && currentRoute !== '/register') {
     window.location.hash = '#/login';
   }
 };
@@ -12,12 +18,14 @@ const api = axios.create({
 });
 
 let unauthorizedHandler: (() => void) | null = null;
-export const setUnauthorizedHandler = (cb: () => void) => { unauthorizedHandler = cb; };
+export const setUnauthorizedHandler = (cb: (() => void) | null) => { unauthorizedHandler = cb; };
 
 api.interceptors.response.use(
   (r) => r,
   (e) => {
-    if (e.response?.status === 401) {
+    const isAuthRequest = e.config?.url?.includes('/auth/login') || e.config?.url?.includes('/auth/me');
+
+    if (e.response?.status === 401 && !isAuthRequest) {
       if (unauthorizedHandler) unauthorizedHandler();
       else redirectToLogin();
     }

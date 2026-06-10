@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { AuthUser } from '../types';
 import { disconnectSocket } from '../lib/socket';
 import { getMe } from '../services/auth.service';
+import { setUnauthorizedHandler } from '../lib/api';
 
 interface AuthCtx { user: AuthUser | null; loading: boolean; setUser: (u: AuthUser | null) => void; logout: () => void }
 const AuthContext = createContext<AuthCtx>({ user: null, loading: false, setUser: () => {}, logout: () => {} });
@@ -22,11 +23,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const boot = async () => {
-      if (user) {
-        setLoading(false);
-        return;
-      }
-
       try {
         const me = await getMe();
         setUserState(me);
@@ -42,6 +38,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     void boot();
   }, []);
 
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      setUserState(null);
+      window.localStorage.removeItem(AUTH_STORAGE_KEY);
+      disconnectSocket();
+
+      const currentRoute = window.location.hash.replace(/^#/, '');
+      if (currentRoute !== '/login' && currentRoute !== '/register') {
+        window.location.hash = '#/login';
+      }
+    });
+
+    return () => setUnauthorizedHandler(null);
+  }, []);
+
   const setUser = (u: AuthUser | null) => {
     setUserState(u);
     if (u) window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(u));
@@ -51,7 +62,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     disconnectSocket();
-    if (window.location.hash !== '#/login') {
+    const currentRoute = window.location.hash.replace(/^#/, '');
+    if (currentRoute !== '/login' && currentRoute !== '/register') {
       window.location.hash = '#/login';
     }
   };
