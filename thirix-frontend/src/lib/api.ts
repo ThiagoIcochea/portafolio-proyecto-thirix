@@ -1,4 +1,7 @@
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
+
+const navigate = useNavigate();
 
 const api = axios.create({
   baseURL: 'https://portafolio-proyecto-thirix.onrender.com/api',
@@ -13,7 +16,7 @@ api.interceptors.response.use(
   (e) => {
     if (e.response?.status === 401) {
       if (unauthorizedHandler) unauthorizedHandler();
-      else window.location.href = '/login';
+      else navigate('/login');
     }
     return Promise.reject(e);
   }
