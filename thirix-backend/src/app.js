@@ -20,9 +20,26 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = [
+    process.env.CORS_ORIGIN,
+    "https://portafolio-proyecto-thirix-1.onrender.com",
+    "https://portafolio-proyecto-thirix.onrender.com",
+    "http://localhost:5173",
+    "http://localhost:3000"
+].filter(Boolean);
+
 app.use(cors({
-    origin: "https://portafolio-proyecto-thirix-1.onrender.com",
-    credentials: true
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+            return;
+        }
+
+        callback(null, false);
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(helmet());
 

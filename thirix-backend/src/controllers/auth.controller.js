@@ -100,16 +100,18 @@ const login = async (req, res) => {
         }
 
         const token = generateToken(user._id);
+        const isProduction = process.env.NODE_ENV === "production";
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         res.status(200).json({
             message: "Login exitoso",
+            token,
             user: {
                 id: user._id,
                 username: user.username,
@@ -127,9 +129,12 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
+    const isProduction = process.env.NODE_ENV === "production";
 
     res.cookie("token", "", {
         httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
         expires: new Date(0)
     });
 
