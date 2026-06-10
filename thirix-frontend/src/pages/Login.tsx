@@ -27,23 +27,23 @@ export default function Login() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const res = await login({ email, password });
+      const response = await login({ email, password });
+      const res = response.data ?? response;
       console.log('Login response:', res);
-      let userData = res.user || res;
+      let userData = res?.user || res;
       console.log('User data before transform:', userData);
-      
-      
+
       if (userData && !userData._id && (userData as any).id) {
         userData = { ...userData, _id: (userData as any).id };
       }
-      
-      if (!userData._id) {
+
+      if (!userData?._id) {
         Swal.fire('Error', 'Error de autenticación: sin ID de usuario', 'error');
         return;
       }
-      
+
       console.log('User data after transform:', userData);
-      const token = (res as any)?.token || (res as any)?.accessToken || (res as any)?.jwt || (res as any)?.authorization?.token;
+      const token = (res as any)?.token || (res as any)?.accessToken || (res as any)?.jwt || (res as any)?.authorization?.token || (res as any)?.authToken || (res as any)?.session?.token || (response.headers as any)?.authorization || (response.headers as any)?.Authorization;
       if (token) {
         window.localStorage.setItem('auth_token', token);
       }

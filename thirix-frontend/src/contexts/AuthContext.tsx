@@ -23,13 +23,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const boot = async () => {
+      const storedUserRaw = window.localStorage.getItem(AUTH_STORAGE_KEY);
+      if (storedUserRaw) {
+        try {
+          const storedUser = JSON.parse(storedUserRaw) as AuthUser;
+          setUserState(storedUser);
+          setLoading(false);
+          return;
+        } catch {
+          window.localStorage.removeItem(AUTH_STORAGE_KEY);
+        }
+      }
+
       try {
         const me = await getMe();
         setUserState(me);
         window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(me));
       } catch {
-        setUserState(null);
-        window.localStorage.removeItem(AUTH_STORAGE_KEY);
+        const hasStoredToken = Boolean(window.localStorage.getItem('auth_token'));
+        if (!hasStoredToken) {
+          setUserState(null);
+          window.localStorage.removeItem(AUTH_STORAGE_KEY);
+        }
       } finally {
         setLoading(false);
       }
