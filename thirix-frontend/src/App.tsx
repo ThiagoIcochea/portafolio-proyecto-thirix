@@ -19,12 +19,34 @@ import NotFound from './pages/NotFound';
 
 function App() {
   return (
-    <AuthProvider>
-      <HashRouter>
+    <HashRouter>
+      <AuthProvider>
         <Routes>
-          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="/" element={<Feed />} />
             <Route path="/create-post" element={<CreatePost />} />
             <Route path="/profile/:userId" element={<Profile />} />
@@ -35,12 +57,20 @@ function App() {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/saved" element={<SavedPosts />} />
           </Route>
-          <Route path="/live/:id" element={<ProtectedRoute><LiveStream /></ProtectedRoute>} />
+
+          <Route
+            path="/live/:id"
+            element={
+              <ProtectedRoute>
+                <LiveStream />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </HashRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </HashRouter>
   );
 }
-
 export default App;
