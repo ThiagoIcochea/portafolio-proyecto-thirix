@@ -51,7 +51,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     disconnectSocket();
-    window.location.href = '/login';
+    if (window.location.hash !== '#/login') {
+      window.location.hash = '#/login';
+    }
   };
 
   return <AuthContext.Provider value={{ user, loading, setUser, logout }}>{children}</AuthContext.Provider>;
