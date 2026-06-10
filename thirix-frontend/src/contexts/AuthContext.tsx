@@ -40,13 +40,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     setUnauthorizedHandler(() => {
-      setUserState(null);
-      window.localStorage.removeItem(AUTH_STORAGE_KEY);
-      disconnectSocket();
+      const hasStoredUser = Boolean(window.localStorage.getItem(AUTH_STORAGE_KEY));
+      const hasStoredToken = Boolean(window.localStorage.getItem('auth_token'));
 
-      const currentRoute = window.location.hash.replace(/^#/, '');
-      if (currentRoute !== '/login' && currentRoute !== '/register') {
-        window.location.hash = '#/login';
+      if (!hasStoredUser && !hasStoredToken) {
+        setUserState(null);
+        window.localStorage.removeItem(AUTH_STORAGE_KEY);
+        disconnectSocket();
+
+        const currentRoute = window.location.hash.replace(/^#/, '');
+        if (currentRoute !== '/login' && currentRoute !== '/register') {
+          window.location.hash = '#/login';
+        }
       }
     });
 
@@ -56,7 +61,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const setUser = (u: AuthUser | null) => {
     setUserState(u);
     if (u) window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(u));
-    else window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    else {
+      window.localStorage.removeItem(AUTH_STORAGE_KEY);
+      window.localStorage.removeItem('auth_token');
+    }
   };
 
   const logout = () => {

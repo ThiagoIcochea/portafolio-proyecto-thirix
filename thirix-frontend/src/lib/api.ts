@@ -1,4 +1,6 @@
-import axios from 'axios';
+import axios, { AxiosHeaders } from 'axios';
+
+const AUTH_TOKEN_STORAGE_KEY = 'auth_token';
 
 const getCurrentRoute = () => {
   if (typeof window === 'undefined') return '';
@@ -15,6 +17,21 @@ const redirectToLogin = () => {
 const api = axios.create({
   baseURL: 'https://portafolio-proyecto-thirix.onrender.com/api',
   withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+    if (token) {
+      const headers = config.headers instanceof AxiosHeaders
+        ? config.headers
+        : new AxiosHeaders(config.headers);
+
+      headers.set('Authorization', `Bearer ${token}`);
+      config.headers = headers;
+    }
+  }
+  return config;
 });
 
 let unauthorizedHandler: (() => void) | null = null;

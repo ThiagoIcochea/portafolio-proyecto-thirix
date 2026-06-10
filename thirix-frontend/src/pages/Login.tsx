@@ -43,6 +43,10 @@ export default function Login() {
       }
       
       console.log('User data after transform:', userData);
+      const token = (res as any)?.token || (res as any)?.accessToken || (res as any)?.jwt || (res as any)?.authorization?.token;
+      if (token) {
+        window.localStorage.setItem('auth_token', token);
+      }
       setUser(userData);
       connectSocket(userData._id);
       Swal.fire('Bienvenido', 'Has iniciado sesion correctamente', 'success');
