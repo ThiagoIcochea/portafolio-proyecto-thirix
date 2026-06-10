@@ -2,20 +2,14 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { AuthUser } from '../types';
 import { disconnectSocket } from '../lib/socket';
 import { getMe } from '../services/auth.service';
-import {useNavigate} from 'react-router-dom';
 
 interface AuthCtx { user: AuthUser | null; loading: boolean; setUser: (u: AuthUser | null) => void; logout: () => void }
-
 const AuthContext = createContext<AuthCtx>({ user: null, loading: false, setUser: () => {}, logout: () => {} });
 export const useAuth = () => useContext(AuthContext);
 
- 
 const AUTH_STORAGE_KEY = 'auth_user';
 
-
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const navigate = useNavigate();
   const [user, setUserState] = useState<AuthUser | null>(() => {
     try {
       const raw = window.localStorage.getItem(AUTH_STORAGE_KEY);
@@ -57,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     disconnectSocket();
-    navigate('/login');
+    window.location.href = '/login';
   };
 
   return <AuthContext.Provider value={{ user, loading, setUser, logout }}>{children}</AuthContext.Provider>;
