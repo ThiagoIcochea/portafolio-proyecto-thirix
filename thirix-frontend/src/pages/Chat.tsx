@@ -223,16 +223,16 @@ export default function Chat() {
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
-    <div className="max-w-2xl mx-auto flex flex-col h-[calc(100vh-8rem)]">
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white sticky top-0 z-10">
+    <div className="w-full max-w-2xl mx-auto flex flex-col h-[calc(100dvh-8rem)] min-h-[calc(100dvh-8rem)] overflow-hidden">
+      <div className="flex items-center gap-3 px-3 py-3 sm:px-4 border-b border-gray-200 bg-white sticky top-0 z-10">
         <button onClick={() => navigate('/messages')} className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"><ArrowLeft size={20} /></button>
         {otherUser && <Link to={`/profile/${otherUser._id}`} className="flex items-center gap-3 flex-1 min-w-0"><img src={otherUser.avatar || `https://ui-avatars.com/api/?name=${otherUser.firstName}+${otherUser.lastName}&background=3b82f6&color=fff`} alt="" className="w-10 h-10 rounded-full object-cover" /><div className="min-w-0"><p className="font-semibold text-sm text-gray-900 truncate">{otherUser.firstName} {otherUser.lastName}</p><p className="text-xs text-gray-400">@{otherUser.username}</p></div></Link>}
       </div>
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50">
+      <div className="flex-1 min-h-0 overflow-y-auto px-3 py-3 sm:px-4 space-y-3 bg-gray-50">
         {messages.length === 0 ? <div className="text-center py-20 text-gray-400 text-sm">Inicia la conversacion</div> :
          messages.map((m, idx) => { const isMe = (m.sender as any)?._id === user?._id || m.sender === user?._id; return (
           <div key={m._id ?? `msg-${idx}-${m.createdAt}`} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${isMe ? 'bg-primary-600 text-white rounded-br-md' : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md'}`}>
+            <div className={`max-w-[85%] sm:max-w-[75%] w-fit break-words overflow-hidden rounded-2xl px-3 py-2.5 sm:px-4 ${isMe ? 'bg-primary-600 text-white rounded-br-md' : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md'}`}>
               {m.attachments?.map((a, i) => (
   <div key={i} className="mb-2">
 
@@ -247,7 +247,7 @@ export default function Chat() {
             setPreviewType('image');
             setPreviewOpen(true);
           }}
-          className="rounded-lg max-h-60 object-cover cursor-pointer hover:opacity-90"
+          className="rounded-lg max-h-60 w-full max-w-full object-cover cursor-pointer hover:opacity-90"
         />
 
         <a
@@ -266,7 +266,7 @@ export default function Chat() {
       <div className="relative group">
         <video
           src={a.url}
-          className="rounded-lg max-h-60 cursor-pointer"
+          className="rounded-lg max-h-60 w-full max-w-full cursor-pointer"
           onClick={() => {
             setPreviewUrl(a.url);
             setPreviewType('video');
@@ -314,7 +314,7 @@ export default function Chat() {
 
   </div>
 ))}
-              {m.text && <p className="text-sm leading-relaxed">{m.text}</p>}
+              {m.text && <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">{m.text}</p>}
               <p className={`text-[10px] mt-1 ${isMe ? 'text-primary-200' : 'text-gray-400'}`}>{time(m.createdAt)}</p>
             </div>
           </div>
@@ -322,34 +322,36 @@ export default function Chat() {
         {typing && <div className="flex justify-start"><div className="bg-white rounded-2xl px-4 py-3 border border-gray-200 rounded-bl-md"><div className="flex gap-1"><span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay:'0ms'}} /><span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay:'150ms'}} /><span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay:'300ms'}} /></div></div></div>}
         <div ref={endRef} />
       </div>
-      <form onSubmit={handleSend} className="relative flex items-center gap-2 px-4 py-3 border-t border-gray-200 bg-white">
-        <label className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors cursor-pointer"><Paperclip size={20} /><input type="file" accept="image/*,video/*,.pdf,.doc,.docx" onChange={handleAttach} className="hidden" /></label>
-        <button
-          type="button"
-          onClick={() => setCameraOpen(true)}
-          className="p-2 text-gray-500 hover:text-primary-600"
-        >
-          <Camera size={20}/>
-        </button>
+      <form onSubmit={handleSend} className="relative flex flex-wrap items-center gap-2 px-3 py-3 sm:px-4 border-t border-gray-200 bg-white">
+        <div className="flex items-center gap-1 shrink-0">
+          <label className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors cursor-pointer"><Paperclip size={20} /><input type="file" accept="image/*,video/*,.pdf,.doc,.docx" onChange={handleAttach} className="hidden" /></label>
+          <button
+            type="button"
+            onClick={() => setCameraOpen(true)}
+            className="p-2 text-gray-500 hover:text-primary-600"
+          >
+            <Camera size={20}/>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setAudioOpen(true)}
-          className="p-2 text-gray-500 hover:text-primary-600"
-        >
-          <Mic size={20}/>
-        </button>
+          <button
+            type="button"
+            onClick={() => setAudioOpen(true)}
+            className="p-2 text-gray-500 hover:text-primary-600"
+          >
+            <Mic size={20}/>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setEmojiOpen((prev) => !prev)}
-          className="p-2 text-gray-500 hover:text-primary-600"
-          aria-label="Agregar emoji"
-        >
-          <Smile size={20}/>
-        </button>
+          <button
+            type="button"
+            onClick={() => setEmojiOpen((prev) => !prev)}
+            className="p-2 text-gray-500 hover:text-primary-600"
+            aria-label="Agregar emoji"
+          >
+            <Smile size={20}/>
+          </button>
+        </div>
 
-        <input value={text} onChange={e => handleType(e.target.value)} placeholder="Escribe un mensaje..." className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-300 transition-all" />
+        <input value={text} onChange={e => handleType(e.target.value)} placeholder="Escribe un mensaje..." className="flex-1 min-w-[140px] basis-full sm:basis-auto bg-gray-100 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-300 transition-all" />
         <button type="submit" disabled={!text.trim()} className="p-2.5 bg-primary-600 hover:bg-primary-500 text-white rounded-full transition-colors disabled:opacity-40"><Send size={18} /></button>
 
         {emojiOpen && (
