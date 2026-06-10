@@ -5,14 +5,17 @@ import { getMe } from '../services/auth.service';
 import {useNavigate} from 'react-router-dom';
 
 interface AuthCtx { user: AuthUser | null; loading: boolean; setUser: (u: AuthUser | null) => void; logout: () => void }
+
 const AuthContext = createContext<AuthCtx>({ user: null, loading: false, setUser: () => {}, logout: () => {} });
 export const useAuth = () => useContext(AuthContext);
 
+ 
 const AUTH_STORAGE_KEY = 'auth_user';
 
- const navigate = useNavigate();
+
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate();
   const [user, setUserState] = useState<AuthUser | null>(() => {
     try {
       const raw = window.localStorage.getItem(AUTH_STORAGE_KEY);
