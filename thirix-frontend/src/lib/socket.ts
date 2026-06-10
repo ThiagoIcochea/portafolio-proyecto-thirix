@@ -4,7 +4,7 @@ let socket: Socket | null = null;
 
 const URL =
   (import.meta.env.VITE_SOCKET_URL as string | undefined) ||
-  "http://localhost:5000";
+  "https://portafolio-proyecto-thirix.onrender.com";
 
 const normalizeLiveMessage = (data: any) => {
   if (!data) return null;

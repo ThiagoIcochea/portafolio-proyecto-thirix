@@ -20,7 +20,7 @@ export default function EditProfile() {
   const normalizeImageUrl = (url: string) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:5000${url.startsWith('/') ? '' : '/'}${url}`;
+    return `https://portafolio-proyecto-thirix.onrender.com${url.startsWith('/') ? '' : '/'}${url}`;
   };
 
   const normalizeInterests = (items: any[]): string[] => {
